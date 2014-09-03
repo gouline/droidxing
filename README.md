@@ -31,7 +31,8 @@ Next, declare the `CaptureActivity` in your AndroidManifest.xml.
 Now you can just start `CaptureActivity` for result and let it handle the scanning.
 
 ```java
-activity.startActivityForResult(activity, CaptureActivity.class);
+Intent intent = new Intent(context, CaptureActivity.class);
+activity.startActivityForResult(intent, 0);
 ```
 
 Once the code has been scanned, you can retrieve the data from the result by overriding `onActivityResult()` in the activity that started the `CaptureActivity`.

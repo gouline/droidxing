@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">droidxing-demo</string>
+
+    <string name="scan_button">Start scan</string>
+    <string name="scan_stub">&lt; No scanned code &gt;</string>
+
+</resources>

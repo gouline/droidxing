@@ -31,66 +31,66 @@ import java.io.Serializable;
  */
 public class DroidXingResult implements Serializable {
 
-  private final String text;
-  private final byte[] rawBytes;
-  private final float[][] resultPoints;
-  private final String barcodeFormat;
+    private final String text;
+    private final byte[] rawBytes;
+    private final float[][] resultPoints;
+    private final String barcodeFormat;
 
-  public DroidXingResult(Result rawResult) {
-    this.text = rawResult.getText();
-    this.rawBytes = rawResult.getRawBytes();
-    this.resultPoints = serializeResultPoints(rawResult.getResultPoints());
-    this.barcodeFormat = serializeBarcodeFormat(rawResult.getBarcodeFormat());
-  }
-
-  private static float[][] serializeResultPoints(ResultPoint[] points) {
-    if (points == null) return null;
-
-    final float[][] resultPoints = new float[points.length][2];
-    for (int i = 0; i < points.length; ++i) {
-      resultPoints[i][0] = points[i].getX();
-      resultPoints[i][1] = points[i].getY();
+    public DroidXingResult(Result rawResult) {
+        this.text = rawResult.getText();
+        this.rawBytes = rawResult.getRawBytes();
+        this.resultPoints = serializeResultPoints(rawResult.getResultPoints());
+        this.barcodeFormat = serializeBarcodeFormat(rawResult.getBarcodeFormat());
     }
-    return resultPoints;
-  }
 
-  private static ResultPoint[] deserializeResultPoints(float[][] points) {
-    if (points == null) return null;
+    private static float[][] serializeResultPoints(ResultPoint[] points) {
+        if (points == null) return null;
 
-    final ResultPoint[] resultPoints = new ResultPoint[points.length];
-    for (int i = 0; i < points.length; ++i) {
-      resultPoints[i] = new ResultPoint(points[i][0], points[i][1]);
-    }
-    return resultPoints;
-  }
-
-  private static String serializeBarcodeFormat(BarcodeFormat format) {
-    return format.toString();
-  }
-
-  private static BarcodeFormat deserializeBarcodeFormat(String format) {
-    if (format != null) {
-      for (BarcodeFormat currentFormat : BarcodeFormat.values()) {
-        if (currentFormat.toString().equals(format)) {
-          return currentFormat;
+        final float[][] resultPoints = new float[points.length][2];
+        for (int i = 0; i < points.length; ++i) {
+            resultPoints[i][0] = points[i].getX();
+            resultPoints[i][1] = points[i].getY();
         }
-      }
+        return resultPoints;
     }
-    return null;
-  }
 
-  public Result getRawResult() {
-    return new Result(text, rawBytes,
-        deserializeResultPoints(resultPoints),
-        deserializeBarcodeFormat(barcodeFormat));
-  }
+    private static ResultPoint[] deserializeResultPoints(float[][] points) {
+        if (points == null) return null;
 
-  public ParsedResult getParsedResult() {
-    final Result rawResult = getRawResult();
-    if (rawResult != null) {
-      return ResultParser.parseResult(rawResult);
+        final ResultPoint[] resultPoints = new ResultPoint[points.length];
+        for (int i = 0; i < points.length; ++i) {
+            resultPoints[i] = new ResultPoint(points[i][0], points[i][1]);
+        }
+        return resultPoints;
     }
-    return null;
-  }
+
+    private static String serializeBarcodeFormat(BarcodeFormat format) {
+        return format.toString();
+    }
+
+    private static BarcodeFormat deserializeBarcodeFormat(String format) {
+        if (format != null) {
+            for (BarcodeFormat currentFormat : BarcodeFormat.values()) {
+                if (currentFormat.toString().equals(format)) {
+                    return currentFormat;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Result getRawResult() {
+        return new Result(text, rawBytes,
+                deserializeResultPoints(resultPoints),
+                deserializeBarcodeFormat(barcodeFormat));
+    }
+
+    public ParsedResult getParsedResult() {
+        final Result rawResult = getRawResult();
+        if (rawResult != null) {
+            return ResultParser.parseResult(rawResult);
+        }
+        return null;
+    }
 
 }
