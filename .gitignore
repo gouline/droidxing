@@ -24,3 +24,5 @@ build/
 
 # OS-specific
 .DS_Store
+
+deploy/

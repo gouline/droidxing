@@ -47,7 +47,7 @@ public final class CaptureActivityHandler extends Handler {
 
     private static final String TAG = CaptureActivityHandler.class.getSimpleName();
 
-    private final CaptureActivity activity;
+    private final CaptureFragment capture;
     private final DecodeThread decodeThread;
     private State state;
     private final CameraManager cameraManager;
@@ -58,13 +58,13 @@ public final class CaptureActivityHandler extends Handler {
         DONE
     }
 
-    CaptureActivityHandler(CaptureActivity activity,
+    CaptureActivityHandler(CaptureFragment capture,
                            Collection<BarcodeFormat> decodeFormats,
                            String characterSet,
                            CameraManager cameraManager) {
-        this.activity = activity;
-        decodeThread = new DecodeThread(activity, decodeFormats, characterSet,
-                new ViewfinderResultPointCallback(activity.getViewfinderView()));
+        this.capture = capture;
+        decodeThread = new DecodeThread(capture, decodeFormats, characterSet,
+                new ViewfinderResultPointCallback(capture.getViewfinderView()));
         decodeThread.start();
         state = State.SUCCESS;
 
@@ -93,14 +93,14 @@ public final class CaptureActivityHandler extends Handler {
                 }
                 scaleFactor = bundle.getFloat(DecodeThread.BARCODE_SCALED_FACTOR);
             }
-            activity.handleDecode((Result) message.obj, barcode, scaleFactor);
+            capture.handleDecode((Result) message.obj, barcode, scaleFactor);
         } else if (message.what == R.id.decode_failed) {
             // We're decoding as fast as possible, so when one decode fails, start another.
             state = State.PREVIEW;
             cameraManager.requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
         } else if (message.what == R.id.return_scan_result) {
-            activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
-            activity.finish();
+            capture.setResult(Activity.RESULT_OK, (Intent) message.obj);
+            capture.finish();
         } else if (message.what == R.id.launch_product_query) {
             String url = (String) message.obj;
 
@@ -109,7 +109,7 @@ public final class CaptureActivityHandler extends Handler {
             intent.setData(Uri.parse(url));
 
             ResolveInfo resolveInfo =
-                    activity.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+                    capture.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
             String browserPackageName = null;
             if (resolveInfo != null && resolveInfo.activityInfo != null) {
                 browserPackageName = resolveInfo.activityInfo.packageName;
@@ -125,7 +125,7 @@ public final class CaptureActivityHandler extends Handler {
             }
 
             try {
-                activity.startActivity(intent);
+                capture.startActivity(intent);
             } catch (ActivityNotFoundException ignored) {
                 Log.w(TAG, "Can't find anything to handle VIEW of URI " + url);
             }
@@ -153,8 +153,7 @@ public final class CaptureActivityHandler extends Handler {
         if (state == State.SUCCESS) {
             state = State.PREVIEW;
             cameraManager.requestPreviewFrame(decodeThread.getHandler(), R.id.decode);
-            activity.drawViewfinder();
+            capture.drawViewfinder();
         }
     }
-
 }

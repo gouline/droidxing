@@ -45,24 +45,24 @@ final class DecodeThread extends Thread {
     public static final String BARCODE_BITMAP = "barcode_bitmap";
     public static final String BARCODE_SCALED_FACTOR = "barcode_scaled_factor";
 
-    private final CaptureActivity activity;
+    private final CaptureFragment capture;
     private final Map<DecodeHintType, Object> hints;
     private Handler handler;
     private final CountDownLatch handlerInitLatch;
 
-    DecodeThread(CaptureActivity activity,
+    DecodeThread(CaptureFragment capture,
                  Collection<BarcodeFormat> decodeFormats,
                  String characterSet,
                  ResultPointCallback resultPointCallback) {
 
-        this.activity = activity;
+        this.capture = capture;
         handlerInitLatch = new CountDownLatch(1);
 
         hints = new EnumMap<DecodeHintType, Object>(DecodeHintType.class);
 
         // The prefs can't change while the thread is running, so pick them up once here.
         if (decodeFormats == null || decodeFormats.isEmpty()) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(capture);
             decodeFormats = EnumSet.noneOf(BarcodeFormat.class);
             if (prefs.getBoolean(DroidXingPreferences.KEY_DECODE_1D_PRODUCT, true)) {
                 decodeFormats.addAll(DecodeFormatManager.PRODUCT_FORMATS);
@@ -104,9 +104,8 @@ final class DecodeThread extends Thread {
     @Override
     public void run() {
         Looper.prepare();
-        handler = new DecodeHandler(activity, hints);
+        handler = new DecodeHandler(capture, hints);
         handlerInitLatch.countDown();
         Looper.loop();
     }
-
 }
