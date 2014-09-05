@@ -22,6 +22,7 @@ import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Surface;
 
 final class PreviewCallback implements Camera.PreviewCallback {
 
@@ -45,8 +46,40 @@ final class PreviewCallback implements Camera.PreviewCallback {
         Point cameraResolution = configManager.getCameraResolution();
         Handler thePreviewHandler = previewHandler;
         if (cameraResolution != null && thePreviewHandler != null) {
-            Message message = thePreviewHandler.obtainMessage(previewMessage, cameraResolution.x,
-                    cameraResolution.y, data);
+            int width = cameraResolution.x;
+            int height = cameraResolution.y;
+
+            int rotation = configManager.getScreenRotation();
+
+            final int repeats;
+            switch (rotation) {
+                case Surface.ROTATION_0:
+                    Log.d("mg", "ROTATION_0");
+                    repeats = 1;
+                    break;
+                case Surface.ROTATION_90:
+                    Log.d("mg", "ROTATION_90");
+                    repeats = 3;
+                    break;
+                case Surface.ROTATION_180:
+                    Log.d("mg", "ROTATION_180");
+                    repeats = 2;
+                    break;
+                case Surface.ROTATION_270:
+                    Log.d("mg", "ROTATION_270");
+                    repeats = 0;
+                    break;
+                default:
+                    repeats = 0;
+                    break;
+            }
+
+            for (int i = 0; i < repeats; i++) {
+                Log.d("mg", "Rotating...");
+                data = rotateYUV420Degree90(data, width, height);
+            }
+
+            Message message = thePreviewHandler.obtainMessage(previewMessage, width, height, data);
             message.sendToTarget();
             previewHandler = null;
         } else {
@@ -54,4 +87,26 @@ final class PreviewCallback implements Camera.PreviewCallback {
         }
     }
 
+    private byte[] rotateYUV420Degree90(byte[] data, int imageWidth, int imageHeight) {
+        byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
+        // Rotate the Y luma
+        int i = 0;
+        for (int x = 0; x < imageWidth; x++) {
+            for (int y = imageHeight - 1; y >= 0; y--) {
+                yuv[i] = data[y * imageWidth + x];
+                i++;
+            }
+        }
+        // Rotate the U and V color components
+        i = imageWidth * imageHeight * 3 / 2 - 1;
+        for (int x = imageWidth - 1; x > 0; x = x - 2) {
+            for (int y = 0; y < imageHeight / 2; y++) {
+                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth) + x];
+                i--;
+                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth) + (x - 1)];
+                i--;
+            }
+        }
+        return yuv;
+    }
 }

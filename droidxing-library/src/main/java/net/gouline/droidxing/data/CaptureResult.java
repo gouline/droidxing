@@ -29,14 +29,14 @@ import java.io.Serializable;
  *
  * @author Mike Gouline
  */
-public class DroidXingResult implements Serializable {
+public class CaptureResult implements Serializable {
 
     private final String text;
     private final byte[] rawBytes;
     private final float[][] resultPoints;
     private final String barcodeFormat;
 
-    public DroidXingResult(Result rawResult) {
+    public CaptureResult(Result rawResult) {
         this.text = rawResult.getText();
         this.rawBytes = rawResult.getRawBytes();
         this.resultPoints = serializeResultPoints(rawResult.getResultPoints());

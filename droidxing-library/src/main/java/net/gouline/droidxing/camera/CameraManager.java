@@ -89,7 +89,7 @@ public final class CameraManager {
 
         if (!initialized) {
             initialized = true;
-            configManager.initFromCameraParameters(theCamera);
+            configManager.initFromCameraParameters(theCamera, screenRotation);
             if (requestedFramingRectWidth > 0 && requestedFramingRectHeight > 0) {
                 setManualFramingRect(requestedFramingRectWidth, requestedFramingRectHeight);
                 requestedFramingRectWidth = 0;
@@ -116,7 +116,6 @@ public final class CameraManager {
                 Log.w(TAG, "Camera rejected even safe-mode parameters! No configuration");
             }
         }
-
     }
 
     public synchronized boolean isOpen() {
@@ -165,7 +164,7 @@ public final class CameraManager {
     }
 
     /**
-     * Convenience method for {@link net.gouline.droidxing.CaptureActivity}
+     * Convenience method for {@link net.gouline.droidxing.CaptureFragment}
      *
      * @param newSetting if {@code true}, light should be turned on if currently off. And vice versa.
      */
@@ -313,5 +312,4 @@ public final class CameraManager {
         return new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top,
                 rect.width(), rect.height(), false);
     }
-
 }

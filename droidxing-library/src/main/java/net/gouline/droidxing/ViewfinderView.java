@@ -56,8 +56,12 @@ public final class ViewfinderView extends View {
     private final int laserColor;
     private final int resultPointColor;
     private int scannerAlpha;
-    private List<ResultPoint> possibleResultPoints;
+
+    private final List<ResultPoint> possibleResultPoints;
+    private final Object possibleResultPointsLock = new Object();
+
     private List<ResultPoint> lastPossibleResultPoints;
+    private final Object lastPossibleResultPointsLock = new Object();
 
     // This constructor is used when the class is built from an XML resource.
     public ViewfinderView(Context context, AttributeSet attrs) {
@@ -117,34 +121,36 @@ public final class ViewfinderView extends View {
             float scaleX = frame.width() / (float) previewFrame.width();
             float scaleY = frame.height() / (float) previewFrame.height();
 
-            List<ResultPoint> currentPossible = possibleResultPoints;
-            List<ResultPoint> currentLast = lastPossibleResultPoints;
             int frameLeft = frame.left;
             int frameTop = frame.top;
-            if (currentPossible.isEmpty()) {
+            if (possibleResultPoints.isEmpty()) {
                 lastPossibleResultPoints = null;
             } else {
-                possibleResultPoints = new ArrayList<ResultPoint>(5);
-                lastPossibleResultPoints = currentPossible;
+                possibleResultPoints.clear();
+                lastPossibleResultPoints = possibleResultPoints;
                 paint.setAlpha(CURRENT_POINT_OPACITY);
                 paint.setColor(resultPointColor);
-                synchronized (currentPossible) {
-                    for (ResultPoint point : currentPossible) {
+
+                synchronized (possibleResultPointsLock) {
+                    for (ResultPoint point : possibleResultPoints) {
                         canvas.drawCircle(frameLeft + (int) (point.getX() * scaleX),
                                 frameTop + (int) (point.getY() * scaleY),
-                                POINT_SIZE, paint);
+                                POINT_SIZE,
+                                paint);
                     }
                 }
             }
-            if (currentLast != null) {
+            if (lastPossibleResultPoints != null) {
                 paint.setAlpha(CURRENT_POINT_OPACITY / 2);
                 paint.setColor(resultPointColor);
-                synchronized (currentLast) {
+
+                synchronized (lastPossibleResultPointsLock) {
                     float radius = POINT_SIZE / 2.0f;
-                    for (ResultPoint point : currentLast) {
+                    for (ResultPoint point : lastPossibleResultPoints) {
                         canvas.drawCircle(frameLeft + (int) (point.getX() * scaleX),
                                 frameTop + (int) (point.getY() * scaleY),
-                                radius, paint);
+                                radius,
+                                paint);
                     }
                 }
             }
@@ -169,15 +175,13 @@ public final class ViewfinderView extends View {
     }
 
     public void addPossibleResultPoint(ResultPoint point) {
-        List<ResultPoint> points = possibleResultPoints;
-        synchronized (points) {
-            points.add(point);
-            int size = points.size();
+        synchronized (possibleResultPointsLock) {
+            possibleResultPoints.add(point);
+            int size = possibleResultPoints.size();
             if (size > MAX_RESULT_POINTS) {
                 // trim it
-                points.subList(0, size - MAX_RESULT_POINTS / 2).clear();
+                possibleResultPoints.subList(0, size - MAX_RESULT_POINTS / 2).clear();
             }
         }
     }
-
 }

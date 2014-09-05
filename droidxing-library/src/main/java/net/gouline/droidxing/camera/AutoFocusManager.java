@@ -22,7 +22,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
-import net.gouline.droidxing.data.DroidXingPreferences;
+import net.gouline.droidxing.CapturePreferences;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +50,7 @@ final class AutoFocusManager implements Camera.AutoFocusCallback {
     AutoFocusManager(Camera camera) {
         this.camera = camera;
         String currentFocusMode = camera.getParameters().getFocusMode();
-        useAutoFocus = DroidXingPreferences.getBoolean(DroidXingPreferences.KEY_AUTO_FOCUS) &&
+        useAutoFocus = CapturePreferences.getBoolean(CapturePreferences.KEY_AUTO_FOCUS) &&
                 FOCUS_MODES_CALLING_AF.contains(currentFocusMode);
         Log.i(TAG, "Current focus mode '" + currentFocusMode + "'; use auto focus? " + useAutoFocus);
         start();

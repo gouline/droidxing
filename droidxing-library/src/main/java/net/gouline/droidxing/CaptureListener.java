@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2012 ZXing authors
  * Copyright (C) 2014 Mike Gouline
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,33 +14,28 @@
  * limitations under the License.
  */
 
-package net.gouline.droidxing.camera;
+package net.gouline.droidxing;
 
-import net.gouline.droidxing.CapturePreferences;
+import net.gouline.droidxing.data.CaptureResult;
 
 /**
- * Enumerates settings of the preference controlling the front light.
+ * Listener for capture results.
+ *
+ * @author Mike Gouline
  */
-public enum FrontLightMode {
+public interface CaptureListener {
 
     /**
-     * Always on.
+     * Capture result received.
+     *
+     * @param result The capture result.
      */
-    ON,
-    /**
-     * On only when ambient light is low.
-     */
-    AUTO,
-    /**
-     * Always off.
-     */
-    OFF;
+    void onSuccess(CaptureResult result);
 
-    private static FrontLightMode parse(String modeString) {
-        return modeString == null ? OFF : valueOf(modeString);
-    }
-
-    public static FrontLightMode readPref() {
-        return parse(CapturePreferences.getString(CapturePreferences.KEY_FRONT_LIGHT_MODE));
-    }
+    /**
+     * Capture failed.
+     *
+     * @param cause Failure cause.
+     */
+    void onFailure(Exception cause);
 }

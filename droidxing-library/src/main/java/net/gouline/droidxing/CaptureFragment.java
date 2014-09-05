@@ -1,7 +1,5 @@
 package net.gouline.droidxing;
 
-import android.app.AlertDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -16,14 +14,13 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
 import com.google.zxing.ResultPoint;
 
 import net.gouline.droidxing.camera.CameraManager;
-import net.gouline.droidxing.data.DroidXingResult;
+import net.gouline.droidxing.data.CaptureResult;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -39,16 +36,13 @@ import java.util.Collection;
  */
 public class CaptureFragment extends Fragment implements SurfaceHolder.Callback {
 
-    private static final String TAG = CaptureActivity.class.getSimpleName();
-
-    public static final String EXTRA_CODE_RESULT = "code_result";
+    private static final String TAG = CaptureFragment.class.getSimpleName();
 
     private CameraManager cameraManager;
-    private CaptureActivityHandler handler;
+    private CaptureHandler handler;
     private Result savedResultToShow;
 
     private ViewfinderView viewfinderView;
-    private TextView statusView;
     private SurfaceView surfaceView;
 
     private boolean hasSurface;
@@ -56,16 +50,10 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
     private String characterSet;
     private AmbientLightManager ambientLightManager;
 
-    ViewfinderView getViewfinderView() {
-        return viewfinderView;
-    }
+    private CaptureListener captureListener;
 
-    public Handler getHandler() {
-        return handler;
-    }
-
-    CameraManager getCameraManager() {
-        return cameraManager;
+    public static CaptureFragment newInstance() {
+        return new CaptureFragment();
     }
 
     @Override
@@ -78,7 +66,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         super.onViewCreated(view, savedInstanceState);
 
         viewfinderView = (ViewfinderView) view.findViewById(R.id.viewfinder_view);
-        statusView = (TextView) view.findViewById(R.id.status_view);
         surfaceView = (SurfaceView) view.findViewById(R.id.preview_view);
 
         hasSurface = false;
@@ -98,8 +85,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         viewfinderView.setCameraManager(cameraManager);
 
         handler = null;
-
-        resetStatusView();
 
         SurfaceHolder surfaceHolder = surfaceView.getHolder();
         if (surfaceHolder != null) {
@@ -125,7 +110,9 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
             handler.quitSynchronously();
             handler = null;
         }
+
         ambientLightManager.stop();
+
         cameraManager.closeDriver();
         if (!hasSurface) {
             SurfaceHolder surfaceHolder = surfaceView.getHolder();
@@ -133,10 +120,11 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
                 surfaceHolder.removeCallback(this);
             }
         }
+
         super.onPause();
     }
 
-    private void decodeOrStoreSavedBitmap(Bitmap bitmap, Result result) {
+    private void decodeOrStoreSavedBitmap(Result result) {
         // Bitmap isn't used yet -- will be used soon
         if (handler == null) {
             savedResultToShow = result;
@@ -185,11 +173,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         if (barcode != null) {
             drawResultPoints(barcode, scaleFactor, rawResult);
         }
-
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_CODE_RESULT, new DroidXingResult(rawResult));
-        setResult(RESULT_OK, intent);
-        finish();
+        captureListener.onSuccess(new CaptureResult(rawResult));
     }
 
     /**
@@ -225,8 +209,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         }
     }
 
-    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b,
-                                 float scaleFactor) {
+    private static void drawLine(Canvas canvas, Paint paint, ResultPoint a, ResultPoint b, float scaleFactor) {
         if (a != null && b != null) {
             canvas.drawLine(scaleFactor * a.getX(),
                     scaleFactor * a.getY(),
@@ -250,37 +233,46 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
             cameraManager.openDriver(surfaceHolder, rotation);
             // Creating the handler starts the preview, which can also throw a RuntimeException.
             if (handler == null) {
-                handler = new CaptureActivityHandler(this, decodeFormats, characterSet,
-                        cameraManager);
+                handler = new CaptureHandler(this, decodeFormats, characterSet, cameraManager);
             }
-            decodeOrStoreSavedBitmap(null, null);
-        } catch (IOException ioe) {
-            Log.w(TAG, ioe);
-            displayFrameworkBugMessageAndExit();
+            decodeOrStoreSavedBitmap(null);
+        } catch (IOException e) {
+            Log.w(TAG, "Unexpected error", e);
+            captureListener.onFailure(e);
         } catch (RuntimeException e) {
             // Barcode Scanner has seen crashes in the wild of this variety:
             // java.?lang.?RuntimeException: Fail to connect to camera service
             Log.w(TAG, "Unexpected error initializing camera", e);
-            displayFrameworkBugMessageAndExit();
+            captureListener.onFailure(e);
         }
-    }
-
-    private void displayFrameworkBugMessageAndExit() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getString(R.string.app_title));
-        builder.setMessage(getString(R.string.msg_camera_framework_bug));
-        builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
-        builder.setOnCancelListener(new FinishListener(this));
-        builder.show();
-    }
-
-    private void resetStatusView() {
-        statusView.setText(R.string.msg_default_status);
-        statusView.setVisibility(View.VISIBLE);
-        viewfinderView.setVisibility(View.VISIBLE);
     }
 
     public void drawViewfinder() {
         viewfinderView.drawViewfinder();
+    }
+
+    public Handler getHandler() {
+        return handler;
+    }
+
+    ViewfinderView getViewfinderView() {
+        return viewfinderView;
+    }
+
+    CameraManager getCameraManager() {
+        return cameraManager;
+    }
+
+    CaptureListener getListener() {
+        return captureListener;
+    }
+
+    /**
+     * Sets listener for receiving capture outcome.
+     *
+     * @param captureListener The capture listener.
+     */
+    public void setListener(CaptureListener captureListener) {
+        this.captureListener = captureListener;
     }
 }

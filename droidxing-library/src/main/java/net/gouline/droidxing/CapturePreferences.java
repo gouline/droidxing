@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.gouline.droidxing.data;
+package net.gouline.droidxing;
 
 import net.gouline.droidxing.camera.FrontLightMode;
 
@@ -27,7 +27,7 @@ import java.util.Map;
  *
  * @author Mike Gouline
  */
-public class DroidXingPreferences {
+public class CapturePreferences {
 
     public static final String KEY_DECODE_1D_PRODUCT = "preferences_decode_1D_product";
     public static final String KEY_DECODE_1D_INDUSTRIAL = "preferences_decode_1D_industrial";
@@ -46,42 +46,35 @@ public class DroidXingPreferences {
     public static final String KEY_DISABLE_BARCODE_SCENE_MODE =
             "preferences_disable_barcode_scene_mode";
 
-    private static final Provider defaultProvider = new Provider() {
-        private Map<String, Object> values = new HashMap<String, Object>();
+    private static CapturePreferences instance;
 
-        {
-            values.put(KEY_DECODE_1D_PRODUCT, true);
-            values.put(KEY_DECODE_1D_INDUSTRIAL, true);
-            values.put(KEY_DECODE_QR, true);
-            values.put(KEY_DECODE_DATA_MATRIX, true);
-            values.put(KEY_DECODE_AZTEC, false);
-            values.put(KEY_DECODE_PDF417, false);
+    private final Map<String, Object> values;
 
-            values.put(KEY_FRONT_LIGHT_MODE, FrontLightMode.OFF.toString());
-            values.put(KEY_AUTO_FOCUS, true);
-            values.put(KEY_INVERT_SCAN, false);
-
-            values.put(KEY_DISABLE_CONTINUOUS_FOCUS, true);
-            values.put(KEY_DISABLE_EXPOSURE, true);
-            values.put(KEY_DISABLE_METERING, true);
-            values.put(KEY_DISABLE_BARCODE_SCENE_MODE, true);
+    public synchronized static CapturePreferences getInstance() {
+        if (instance == null) {
+            instance = new CapturePreferences();
         }
+        return instance;
+    }
 
-        @Override
-        public Object getValue(String key) {
-            return values.get(key);
-        }
-    };
-    private static Provider provider;
+    private CapturePreferences() {
+        values = new HashMap<String, Object>();
 
-    /**
-     * Sets a custom provider instance to use. Values not found in that will fall back on the
-     * default provider.
-     *
-     * @param provider Provider instance.
-     */
-    public static synchronized void setProvider(Provider provider) {
-        DroidXingPreferences.provider = provider;
+        values.put(KEY_DECODE_1D_PRODUCT, true);
+        values.put(KEY_DECODE_1D_INDUSTRIAL, true);
+        values.put(KEY_DECODE_QR, true);
+        values.put(KEY_DECODE_DATA_MATRIX, true);
+        values.put(KEY_DECODE_AZTEC, false);
+        values.put(KEY_DECODE_PDF417, false);
+
+        values.put(KEY_FRONT_LIGHT_MODE, FrontLightMode.OFF.toString());
+        values.put(KEY_AUTO_FOCUS, true);
+        values.put(KEY_INVERT_SCAN, false);
+
+        values.put(KEY_DISABLE_CONTINUOUS_FOCUS, true);
+        values.put(KEY_DISABLE_EXPOSURE, true);
+        values.put(KEY_DISABLE_METERING, true);
+        values.put(KEY_DISABLE_BARCODE_SCENE_MODE, true);
     }
 
     public static String getString(String key) {
@@ -96,37 +89,13 @@ public class DroidXingPreferences {
         return getValue(key, Boolean.class);
     }
 
-    private static <T> T getValue(String key, Class<T> clazz) {
-        final T value = (provider != null) ? getTypedValue(provider, key, clazz) : null;
-        final T defaultValue = getTypedValue(defaultProvider, key, clazz);
-        if (value != null) {
-            return value;
-        } else if (defaultValue != null) {
-            return defaultValue;
-        }
-        return null;
-    }
-
     @SuppressWarnings("unchecked")
-    private static <T> T getTypedValue(Provider provider, String key, Class<T> clazz) {
-        final Object value = provider.getValue(key);
+    static <T> T getValue(String key, Class<T> clazz) {
+        CapturePreferences prefs = CapturePreferences.getInstance();
+        Object value = prefs.values.get(key);
         if (value != null && clazz.isInstance(value)) {
             return (T) value;
         }
         return null;
     }
-
-    /**
-     * Custom preference value provider.
-     */
-    public static interface Provider {
-        /**
-         * Retrieves preference by key.
-         *
-         * @param key Preference key.
-         * @return Preference value (String, Integer or Boolean).
-         */
-        public Object getValue(String key);
-    }
-
 }

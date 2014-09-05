@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Copyright (C) 2008 ZXing authors
  Copyright (C) 2014 Mike Gouline
@@ -16,11 +15,13 @@
  limitations under the License.
  -->
 <resources>
-  <item type="id" name="decode"/>
-  <item type="id" name="decode_failed"/>
-  <item type="id" name="decode_succeeded"/>
-  <item type="id" name="launch_product_query"/>
-  <item type="id" name="quit"/>
-  <item type="id" name="restart_preview"/>
-  <item type="id" name="return_scan_result"/>
+
+    <item name="decode" type="id" />
+    <item name="decode_failed" type="id" />
+    <item name="decode_succeeded" type="id" />
+    <item name="launch_product_query" type="id" />
+    <item name="quit" type="id" />
+    <item name="restart_preview" type="id" />
+    <item name="return_scan_result" type="id" />
+
 </resources>

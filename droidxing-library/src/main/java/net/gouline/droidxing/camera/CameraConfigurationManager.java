@@ -27,7 +27,7 @@ import android.view.WindowManager;
 
 import com.google.zxing.client.android.camera.CameraConfigurationUtils;
 
-import net.gouline.droidxing.data.DroidXingPreferences;
+import net.gouline.droidxing.CapturePreferences;
 
 /**
  * A class which deals with reading, parsing, and setting the camera parameters which are used to
@@ -40,6 +40,7 @@ final class CameraConfigurationManager {
     private final Context context;
     private Point screenResolution;
     private Point cameraResolution;
+    private int screenRotation;
 
     CameraConfigurationManager(Context context) {
         this.context = context;
@@ -48,11 +49,13 @@ final class CameraConfigurationManager {
     /**
      * Reads, one time, values from the camera that are needed by the app.
      */
-    void initFromCameraParameters(Camera camera) {
+    void initFromCameraParameters(Camera camera, int screenRotation) {
         Camera.Parameters parameters = camera.getParameters();
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
         Display display = manager.getDefaultDisplay();
         Point theScreenResolution = new Point();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             display.getSize(theScreenResolution);
         } else {
@@ -63,6 +66,8 @@ final class CameraConfigurationManager {
         cameraResolution = CameraConfigurationUtils
                 .findBestPreviewSizeValue(parameters, screenResolution);
         Log.i(TAG, "Camera resolution: " + cameraResolution);
+
+        this.screenRotation = screenRotation;
     }
 
     void setDesiredCameraParameters(Camera camera, boolean safeMode) {
@@ -77,25 +82,24 @@ final class CameraConfigurationManager {
 
         CameraConfigurationUtils.setFocus(
                 parameters,
-                DroidXingPreferences.getBoolean(DroidXingPreferences.KEY_AUTO_FOCUS),
-                DroidXingPreferences.getBoolean(DroidXingPreferences.KEY_DISABLE_CONTINUOUS_FOCUS),
+                CapturePreferences.getBoolean(CapturePreferences.KEY_AUTO_FOCUS),
+                CapturePreferences.getBoolean(CapturePreferences.KEY_DISABLE_CONTINUOUS_FOCUS),
                 safeMode);
 
         if (!safeMode) {
-            if (DroidXingPreferences.getBoolean(DroidXingPreferences.KEY_INVERT_SCAN)) {
+            if (CapturePreferences.getBoolean(CapturePreferences.KEY_INVERT_SCAN)) {
                 CameraConfigurationUtils.setInvertColor(parameters);
             }
 
-            if (!DroidXingPreferences.getBoolean(DroidXingPreferences.KEY_DISABLE_BARCODE_SCENE_MODE)) {
+            if (!CapturePreferences.getBoolean(CapturePreferences.KEY_DISABLE_BARCODE_SCENE_MODE)) {
                 CameraConfigurationUtils.setBarcodeSceneMode(parameters);
             }
 
-            if (!DroidXingPreferences.getBoolean(DroidXingPreferences.KEY_DISABLE_METERING)) {
+            if (!CapturePreferences.getBoolean(CapturePreferences.KEY_DISABLE_METERING)) {
                 CameraConfigurationUtils.setVideoStabilization(parameters);
                 CameraConfigurationUtils.setFocusArea(parameters);
                 CameraConfigurationUtils.setMetering(parameters);
             }
-
         }
 
         parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
@@ -121,6 +125,10 @@ final class CameraConfigurationManager {
         return screenResolution;
     }
 
+    int getScreenRotation() {
+        return screenRotation;
+    }
+
     boolean getTorchState(Camera camera) {
         if (camera != null) {
             String flashMode = camera.getParameters().getFlashMode();
@@ -144,9 +152,8 @@ final class CameraConfigurationManager {
 
     private void doSetTorch(Camera.Parameters parameters, boolean newSetting, boolean safeMode) {
         CameraConfigurationUtils.setTorch(parameters, newSetting);
-        if (!safeMode && !DroidXingPreferences.getBoolean(DroidXingPreferences.KEY_DISABLE_EXPOSURE)) {
+        if (!safeMode && !CapturePreferences.getBoolean(CapturePreferences.KEY_DISABLE_EXPOSURE)) {
             CameraConfigurationUtils.setBestExposure(parameters, newSetting);
         }
     }
-
 }

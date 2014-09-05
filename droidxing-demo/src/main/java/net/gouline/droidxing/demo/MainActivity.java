@@ -1,53 +1,44 @@
 package net.gouline.droidxing.demo;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.support.v4.app.FragmentActivity;
+import android.widget.Toast;
 
-import com.google.zxing.client.result.ParsedResult;
+import net.gouline.droidxing.CaptureFragment;
+import net.gouline.droidxing.CaptureListener;
+import net.gouline.droidxing.data.CaptureResult;
 
-import net.gouline.droidxing.CaptureActivity;
-import net.gouline.droidxing.data.DroidXingResult;
-
-import java.io.Serializable;
-
-
-public class MainActivity extends Activity {
-
-    private TextView codeTextView;
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        codeTextView = (TextView) findViewById(R.id.txt_code);
-
-        Button scanButton = (Button) findViewById(R.id.btn_scan);
-        scanButton.setOnClickListener(new View.OnClickListener() {
+        CaptureFragment captureFragment = CaptureFragment.newInstance();
+        captureFragment.setListener(new CaptureListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-                startActivityForResult(intent, 0);
+            public void onSuccess(CaptureResult r) {
+                String text = null;
+                if (r != null) {
+                    text = r.getParsedResult().toString();
+                }
+                Toast.makeText(MainActivity.this, "Captured: " + text, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Exception cause) {
+                String text = null;
+                if (cause != null) {
+                    text = cause.getMessage();
+                }
+                Toast.makeText(MainActivity.this, "Error: " + text, Toast.LENGTH_SHORT).show();
             }
         });
-    }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK && data != null) {
-            Serializable codeResult = data.getSerializableExtra(CaptureActivity.EXTRA_CODE_RESULT);
-            if (codeResult != null && codeResult instanceof DroidXingResult) {
-                DroidXingResult codeResultBlock = (DroidXingResult) codeResult;
-                ParsedResult parsedResult = codeResultBlock.getParsedResult(); // Parsed data
-
-                codeTextView.setText(parsedResult.toString());
-            }
-        }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.layout_frame, captureFragment)
+                .commit();
     }
 }

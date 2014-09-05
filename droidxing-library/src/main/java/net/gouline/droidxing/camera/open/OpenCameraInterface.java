@@ -101,8 +101,7 @@ public final class OpenCameraInterface {
      * @param info           Camera info.
      * @param screenRotation Current screen rotation.
      */
-    private static void setCameraOrientation(Camera camera, Camera.CameraInfo info,
-                                             int screenRotation) {
+    private static void setCameraOrientation(Camera camera, Camera.CameraInfo info, int screenRotation) {
         int degrees = 0;
         switch (screenRotation) {
             case Surface.ROTATION_0:
@@ -119,15 +118,12 @@ public final class OpenCameraInterface {
                 break;
         }
 
-        int orientation;
+        final int orientation;
         if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            orientation = (info.orientation + degrees) % 360;
-            orientation = (360 - orientation) % 360;  // compensate the mirror
+            orientation = 360 - (info.orientation + degrees) % 360;  // compensate the mirror
         } else { // back-facing
             orientation = (info.orientation - degrees + 360) % 360;
         }
-
         camera.setDisplayOrientation(orientation);
     }
-
 }

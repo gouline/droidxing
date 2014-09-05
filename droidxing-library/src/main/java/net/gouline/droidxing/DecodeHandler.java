@@ -120,5 +120,4 @@ final class DecodeHandler extends Handler {
         bundle.putByteArray(DecodeThread.BARCODE_BITMAP, out.toByteArray());
         bundle.putFloat(DecodeThread.BARCODE_SCALED_FACTOR, (float) width / source.getWidth());
     }
-
 }

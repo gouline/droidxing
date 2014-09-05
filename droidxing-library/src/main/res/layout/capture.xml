@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Copyright (C) 2008 ZXing authors
  Copyright (C) 2014 Mike Gouline
@@ -15,26 +14,18 @@
  See the License for the specific language governing permissions and
  limitations under the License.
  -->
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-       xmlns:tools="http://schemas.android.com/tools">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-  <SurfaceView
-      android:id="@+id/preview_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+    <SurfaceView
+        android:id="@+id/preview_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-  <net.gouline.droidxing.ViewfinderView
-      android:id="@+id/viewfinder_view"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+    <net.gouline.droidxing.ViewfinderView
+        android:id="@+id/viewfinder_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-  <TextView
-      android:id="@+id/status_view"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_gravity="bottom|center_horizontal"
-      android:background="@color/transparent"
-      android:text="@string/msg_default_status"
-      android:textColor="@color/status_text"/>
-
-</merge>
+</FrameLayout>

@@ -32,7 +32,7 @@ import net.gouline.droidxing.camera.FrontLightMode;
  * @author Sean Owen
  * @author Nikolaus Huber
  */
-final class AmbientLightManager implements SensorEventListener {
+public final class AmbientLightManager implements SensorEventListener {
 
     private static final float TOO_DARK_LUX = 45.0f;
     private static final float BRIGHT_ENOUGH_LUX = 450.0f;
