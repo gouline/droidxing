@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  Copyright (C) 2008 ZXing authors
  Copyright (C) 2014 Mike Gouline
 
@@ -17,9 +16,11 @@
 -->
 <resources>
 
-  <string name="app_title">Scan</string>
-  <string name="msg_default_status">Place a barcode inside the viewfinder rectangle to scan it.</string>
-  <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
-  <string name="button_ok">OK</string>
+    <string name="app_title">Scan</string>
+
+    <string name="msg_default_status">Place a barcode inside the viewfinder rectangle to scan it.</string>
+    <string name="msg_camera_framework_bug">Sorry, the Android camera encountered a problem. You may need to restart the device.</string>
+
+    <string name="button_ok">OK</string>
 
 </resources>
