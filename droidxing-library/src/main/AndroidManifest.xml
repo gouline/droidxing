@@ -35,6 +35,8 @@
         android:name="android.hardware.camera.flash"
         android:required="false" />
 
-    <application />
+    <application>
+        <activity android:name=".CaptureActivity" />
+    </application>
 
 </manifest>
