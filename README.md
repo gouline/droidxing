@@ -1,4 +1,4 @@
-DroidXing
+DroidXing [![Build Status](https://travis-ci.org/mgouline/droidxing.svg?branch=master)](https://travis-ci.org/mgouline/droidxing)
 ===========
 
 Simple Android wrapper for [ZXing](https://github.com/zxing/zxing).
