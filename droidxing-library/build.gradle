@@ -1,32 +1,26 @@
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath 'com.android.tools.build:gradle:0.11.+'
-  }
-}
-apply plugin: 'android-library'
-
-repositories {
-  mavenCentral()
-}
+apply plugin: 'com.android.library'
 
 android {
-  compileSdkVersion 19
-  buildToolsVersion "19.1.0"
+    compileSdkVersion project.property('android.compileSdkVersion').toInteger()
+    buildToolsVersion project.property('android.buildToolsVersion')
 
-  defaultConfig {
-    minSdkVersion 9
-    targetSdkVersion 19
-  }
-}
+    defaultConfig {
+        minSdkVersion project.property('android.minSdkVersion').toInteger()
+        targetSdkVersion project.property('android.targetSdkVersion').toInteger()
+        versionCode project.property('android.versionCode').toInteger()
+        versionName project.property('android.versionName')
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
 
-repositories {
-  mavenCentral()
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
 }
 
 dependencies {
-  compile 'com.google.zxing:core:3.1.0'
-  compile 'com.google.zxing:android-core:3.1.0'
+    compile "com.google.zxing:core:${project.property('android.dep.zxing')}"
+    compile "com.google.zxing:android-core:${project.property('android.dep.zxing')}"
+
+    androidTestCompile "com.android.support.test.espresso:espresso-core:${project.property('android.dep.espresso')}"
+    androidTestCompile "com.android.support.test:testing-support-lib:${project.property('android.dep.testing-support-lib')}"
 }
