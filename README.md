@@ -15,17 +15,14 @@ The easiest way to import the library into your project is by grabbing the AAR f
 
 ```gradle
 depedencies {
-  compile 'net.gouline.droidxing:droidxing:0.1.+@aar'
+  compile 'net.gouline.droidxing:droidxing:0.1.1@aar'
 }
 ```
 
 Next, declare the `CaptureActivity` in your AndroidManifest.xml.
 
 ```xml
-<activity
-    android:name="net.gouline.droidxing.CaptureActivity"
-    android:configChanges="orientation"
-    android:screenOrientation="nosensor"/>
+<activity android:name="net.gouline.droidxing.CaptureActivity" />
 ```
 
 Now you can just start `CaptureActivity` for result and let it handle the scanning.
