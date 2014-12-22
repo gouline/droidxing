@@ -1,4 +1,4 @@
-DroidXing
+DroidXing [![Build Status](https://travis-ci.org/mgouline/droidxing.svg?branch=master)](https://travis-ci.org/mgouline/droidxing)
 ===========
 
 Simple Android wrapper for [ZXing](https://github.com/zxing/zxing).
@@ -106,8 +106,3 @@ CapturePreferences.setProvider(new Provider() {
 This is a simplistic example, in the real world you can either plug in a hash map with your values or implement any other retrieval flow.
 
 If your custom provider is not set or does not return a value for any key, configuration will fall back to the defaults. As a result, only values differing to the defaults should be supplied by the custom provider.
-
-Build
------
-
-[![Build Status](https://travis-ci.org/mgouline/droidxing.svg?branch=master)](https://travis-ci.org/mgouline/droidxing)
