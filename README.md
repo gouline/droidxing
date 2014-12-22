@@ -1,13 +1,13 @@
-DroidXing
+DroidXing [![Build Status](https://travis-ci.org/mgouline/droidxing.svg?branch=master)](https://travis-ci.org/mgouline/droidxing)
 ===========
 
 Simple Android wrapper for [ZXing](https://github.com/zxing/zxing).
 
 Summary
 -------
-DroidXing is a simplified version of the [ZXing Android app](https://github.com/zxing/zxing/tree/master/android) intented for anyone, who only wants to allow users to input data in their app via a barcode (1D or 2D, including QR codes). 
+DroidXing is a fork of the [ZXing Android app](https://github.com/zxing/zxing/tree/master/android) intended for anyone, who only wants to allow users to input data in their app via a barcode (1D or 2D, including QR codes).
 
-The flow revoles around the capture activity that gets started, provides the viewfinder UI to allow the user to scan the code and closes, handing the control back to your app.
+The flow revolves around the capture activity that gets started, provides the viewfinder UI to allow the user to scan the code and closes, handing the control back to your app.
 
 Usage
 -----
@@ -31,7 +31,7 @@ Next, declare the `CaptureActivity` in your AndroidManifest.xml.
 Now you can just start `CaptureActivity` for result and let it handle the scanning.
 
 ```java
-activity.startActivityForResult(activity, CaptureActivity.class);
+activity.startActivityForResult(new Intent(activity, CaptureActivity.class), 0);
 ```
 
 Once the code has been scanned, you can retrieve the data from the result by overriding `onActivityResult()` in the activity that started the `CaptureActivity`.
@@ -42,8 +42,8 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
   super.onActivityResult(requestCode, resultCode, data);
   if (resultCode == RESULT_OK && data != null) {
     Serializable codeResult = data.getSerializableExtra(CaptureActivity.EXTRA_CODE_RESULT);
-    if (codeResult != null && codeResult instanceof DroidXingResult) {
-      DroidXingResult codeResultBlock = (DroidXingResult) codeResult;
+    if (codeResult != null && codeResult instanceof CaptureResult) {
+      CaptureResult codeResultBlock = (CaptureResult) codeResult;
       Result rawResult = codeResultBlock.getRawResult(); // Raw scan data
       ParsedResult parsedResult = codeResultBlock.getParsedResult(); // Parsed data
     }
@@ -90,12 +90,12 @@ Default configuration will suffice for most users but the following advanced fea
 To override defaults, you can set a custom properties provider.
 
 ```java
-DroidXingPreferences.setProvider(new Provider() {
+CapturePreferences.setProvider(new Provider() {
   @Override
   public Object getValue(String key) {
-    if (DroidXingPreferences.KEY_DECODE_QR.equals(key)) {
+    if (CapturePreferences.KEY_DECODE_QR.equals(key)) {
       return false;
-    } else if (DroidXingPreferences.KEY_DECODE_AZTEC.equals(key)) {
+    } else if (CapturePreferences.KEY_DECODE_AZTEC.equals(key)) {
       return true;
     }
     return null;

@@ -1,0 +1,33 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion project.property('android.compileSdkVersion').toInteger()
+    buildToolsVersion project.property('android.buildToolsVersion')
+
+    defaultConfig {
+        applicationId "net.gouline.droidxing.demo"
+        minSdkVersion project.property('android.minSdkVersion').toInteger()
+        targetSdkVersion project.property('android.targetSdkVersion').toInteger()
+        versionCode project.property('android.versionCode').toInteger()
+        versionName project.property('android.versionName')
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+}
+
+dependencies {
+    compile project(':droidxing-library')
+
+    compile "com.android.support:support-v4:${project.property('android.dep.support-v4')}"
+
+    androidTestCompile "com.android.support.test.espresso:espresso-core:${project.property('android.dep.espresso')}"
+    androidTestCompile "com.android.support.test:testing-support-lib:${project.property('android.dep.testing-support-lib')}"
+}
