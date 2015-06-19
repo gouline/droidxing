@@ -4,4 +4,4 @@
 
 test:
   override:
-    - ./gradlew droidxing-demo:testDebug
+    - ./gradlew droidxing-library:testDebug
