@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.0'
+        classpath 'com.android.tools.build:gradle:1.2.3'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -16,4 +16,16 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
+    // Global versions of libraries/tools
+
+    ext.androidBuildToolsVersion = '22.0.1'
+    ext.androidCompileSdkVersion = 22
+
+    ext.libAndroidSupportVersion = '22.2.0'
+
+    ext.libZXingVersion = '3.2.0'
+
+    ext.libEspressoVersion = '2.2'
+    ext.libTestingRunnerVersion = '0.3'
 }
