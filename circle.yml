@@ -8,5 +8,7 @@ test:
         background: true
         parallel: true
     - circle-android wait-for-boot
+    - adb wait-for-device
+    - adb shell input keyevent 82 &
   override:
     - ./gradlew connectedAndroidTest
