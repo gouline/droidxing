@@ -26,6 +26,10 @@ allprojects {
 
     ext.libZXingVersion = '3.2.0'
 
+    ext.libRobolectricVersion = '3.0-rc3'
+    ext.libJUnitVersion = '4.12'
+    ext.libAssertJVersion = '1.7.0'
+
     ext.libEspressoVersion = '2.2'
     ext.libTestingRunnerVersion = '0.3'
 }

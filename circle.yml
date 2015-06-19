@@ -3,15 +3,5 @@
 #
 
 test:
-  pre:
-    - emulator -avd circleci-android22 -no-audio -no-window:
-        background: true
-        parallel: true
-    - circle-android wait-for-boot
-    - sleep 10
-    - adb shell input keyevent 82
-    - sleep 10
-    - adb shell input touchscreen swipe 370 735 371 735
-    - sleep 10
   override:
-    - ./gradlew connectedAndroidTest
+    - ./gradlew droidxing-library:testDebug
