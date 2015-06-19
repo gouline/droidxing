@@ -25,10 +25,5 @@ android {
 
 dependencies {
     compile project(':droidxing-library')
-
     compile "com.android.support:support-v4:$libAndroidSupportVersion"
-
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$libEspressoVersion"
-    androidTestCompile "com.android.support.test:runner:$libTestingRunnerVersion"
-    androidTestCompile "com.android.support.test:rules:$libTestingRunnerVersion"
 }
