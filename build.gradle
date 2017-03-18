@@ -1,35 +1,31 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.0'
     }
 }
 
 allprojects {
     repositories {
-        mavenCentral()
+        jcenter()
     }
 
-    // Global versions of libraries/tools
+    ext {
+        androidCompileSdkVersion = 25
+        androidBuildToolsVersion = '25.0.2'
 
-    ext.androidBuildToolsVersion = '22.0.1'
-    ext.androidCompileSdkVersion = 22
+        libAndroidSupportVersion = '25.2.0'
 
-    ext.libAndroidSupportVersion = '22.2.0'
+        libZXingVersion = '3.3.0'
 
-    ext.libZXingVersion = '3.2.0'
+        libRobolectricVersion = '3.3.1'
+        libJUnitVersion = '4.12'
+        libAssertJVersion = '1.7.0'
 
-    ext.libRobolectricVersion = '3.0-rc3'
-    ext.libJUnitVersion = '4.12'
-    ext.libAssertJVersion = '1.7.0'
-
-    ext.libEspressoVersion = '2.2'
-    ext.libTestingRunnerVersion = '0.3'
+        libEspressoVersion = '2.2'
+        libTestingRunnerVersion = '0.3'
+    }
 }

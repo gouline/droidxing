@@ -1,7 +1,0 @@
-#
-# Build configuration for Circle CI
-#
-
-test:
-  override:
-    - ./gradlew droidxing-library:testDebug

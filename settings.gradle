@@ -1,1 +1,1 @@
-include ':droidxing-library', ':droidxing-demo'
+include 'droidxing-library', 'droidxing-demo'
