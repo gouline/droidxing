@@ -1,15 +1,20 @@
 language: android
-jdk: oraclejdk7
+jdk: oraclejdk8
+sudo: false
+
 env:
   matrix:
-    - ANDROID_TARGET=android-25 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a
 
 android:
   components:
-    - build-tools-25.0.2
+    - tools
     - android-25
-    - extra-google-m2repository
+    - build-tools-25.0.2
+    - extra-google-google_play_services
+    - extra-android-support
     - extra-android-m2repository
+    - extra-google-m2repository
 
 before_script:
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
