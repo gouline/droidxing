@@ -1,4 +1,4 @@
-DroidXing [![Build Status](https://circleci.com/gh/mgouline/droidxing/tree/master.svg?style=shield)](https://circleci.com/gh/mgouline/droidxing)
+DroidXing [![Build Status](https://circleci.com/gh/mgouline/droidxing/tree/master.svg?style=shield)](https://circleci.com/gh/gouline/droidxing)
 ===========
 
 Simple Android wrapper for [ZXing](https://github.com/zxing/zxing).
