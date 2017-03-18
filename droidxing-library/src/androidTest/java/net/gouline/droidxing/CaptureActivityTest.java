@@ -1,29 +1,27 @@
 package net.gouline.droidxing;
 
-import android.test.ActivityInstrumentationTestCase2;
-import android.test.suitebuilder.annotation.LargeTest;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
-@LargeTest
-public class CaptureActivityTest extends ActivityInstrumentationTestCase2<CaptureActivity> {
+@RunWith(AndroidJUnit4.class)
+public class CaptureActivityTest {
 
-    public CaptureActivityTest() {
-        super(CaptureActivity
-                .class);
-    }
+    @Rule
+    public ActivityTestRule<CaptureActivity> mActivityRule = new ActivityTestRule<>(CaptureActivity.class);
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        getActivity();
-    }
-
-    public void testDefaultStatus() {
-        onView(withText("Place a barcode inside the viewfinder rectangle to scan it.")).check(matches(isDisplayed()));
+    @Test
+    public void defaultStatus() {
+        onView(withText("Place a barcode inside the viewfinder rectangle to scan it."))
+                .check(matches(isDisplayed()));
     }
 
 }

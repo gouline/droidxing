@@ -17,15 +17,14 @@ allprojects {
         androidCompileSdkVersion = 25
         androidBuildToolsVersion = '25.0.2'
 
-        libAndroidSupportVersion = '25.2.0'
+        libAndroidSupportVersion = '25.3.0'
 
         libZXingVersion = '3.3.0'
 
-        libRobolectricVersion = '3.3.1'
         libJUnitVersion = '4.12'
-        libAssertJVersion = '1.7.0'
-
-        libEspressoVersion = '2.2'
-        libTestingRunnerVersion = '0.3'
+        libRobolectricVersion = '3.2.2'
+        libAssertJVersion = '1.7.1'
+        libEspressoVersion = '2.2.2'
+        libTestSupportVersion = '0.5'
     }
 }

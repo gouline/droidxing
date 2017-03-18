@@ -18,14 +18,18 @@ android {
 }
 
 dependencies {
+    provided "com.android.support:support-v4:$libAndroidSupportVersion"
+
     compile "com.google.zxing:core:$libZXingVersion"
     compile "com.google.zxing:android-core:$libZXingVersion"
 
-    testCompile "org.robolectric:robolectric:$libRobolectricVersion"
     testCompile "junit:junit:$libJUnitVersion"
+    testCompile "org.robolectric:robolectric:$libRobolectricVersion"
     testCompile "org.assertj:assertj-core:$libAssertJVersion"
 
-    androidTestCompile "com.android.support.test.espresso:espresso-core:$libEspressoVersion"
-    androidTestCompile "com.android.support.test:runner:$libTestingRunnerVersion"
-    androidTestCompile "com.android.support.test:rules:$libTestingRunnerVersion"
+    androidTestCompile("com.android.support.test.espresso:espresso-core:$libEspressoVersion") {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+    androidTestCompile "com.android.support.test:runner:$libTestSupportVersion"
+    androidTestCompile "com.android.support.test:rules:$libTestSupportVersion"
 }
