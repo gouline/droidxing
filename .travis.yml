@@ -1,0 +1,15 @@
+language: android
+jdk: openjdk8
+sudo: false
+
+android:
+  components:
+    - tools
+    - android-25
+    - build-tools-25.0.2
+    - extra-google-google_play_services
+    - extra-android-support
+    - extra-android-m2repository
+    - extra-google-m2repository
+
+script: ./gradlew droidxing-library:testDebug
