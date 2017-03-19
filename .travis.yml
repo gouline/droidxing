@@ -7,11 +7,17 @@ android:
   components:
     - tools
     - platform-tools
-    - android-25
     - build-tools-25.0.2
-    - extra-google-google_play_services
-    - extra-android-support
+    - android-25
     - extra-android-m2repository
     - extra-google-m2repository
 
 script: ./gradlew droidxing-library:testDebug
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
