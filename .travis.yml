@@ -1,10 +1,12 @@
-language: android
-jdk: oraclejdk8
 sudo: false
+dist: trusty
+language: android
+jdk: openjdk8
 
 android:
   components:
     - tools
+    - platform-tools
     - android-25
     - build-tools-25.0.2
     - extra-google-google_play_services
